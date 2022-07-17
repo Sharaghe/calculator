@@ -1,7 +1,14 @@
 
 const buttons = document.querySelectorAll(".buttons .button, .display .clear");
 const resultDisplay = document.querySelector(".display .result");
-console.log(buttons);
+let leftValue, rightValue = 0;
+let selectedOperator;
+let nextClickResets = false;
+
+const ADD = "add";
+const SUBTRACT = "subtract";
+const MULTIPLY = "multiply";
+const DIVIDE = "divide";
 
 function add(a, b){
     return a + b;
@@ -21,10 +28,10 @@ function divide(a, b){
 
 function operate(operator, a, b){
     switch(operator){
-        case "add": add(a, b); break;
-        case "subtract": subtract(a, b); break;
-        case "multiply": multiply(a, b); break;
-        case "divide": divide(a, b); break;
+        case ADD: return add(a, b); break;
+        case SUBTRACT: return subtract(a, b); break;
+        case MULTIPLY: return multiply(a, b); break;
+        case DIVIDE: return divide(a, b); break;
         default: return;
     }
 }
@@ -38,20 +45,32 @@ for(let button of buttons){
 function clickButton(dataValue){
 
     switch(dataValue){
-        case "divide": break;
-        case "multiply": break;
-        case "add": break;
-        case "subtract": break;
+        case DIVIDE: case MULTIPLY: case ADD: case SUBTRACT: operationClicked(dataValue); break;
         case "clear": clearDisplay(); break;
+        case "equals": showResult(); break;
         default: break;
     }
 
     if(!isNaN(dataValue)) {
-        if(resultDisplay.textContent === "0") resultDisplay.textContent = "";
+        if(resultDisplay.textContent === "0" || nextClickResets) { 
+            resultDisplay.textContent = "";
+            nextClickResets = false;
+        }
         resultDisplay.textContent += dataValue;
     }
 }
 
+function operationClicked(dataValue){
+    leftValue = Number(resultDisplay.textContent);
+    selectedOperator = dataValue;
+    nextClickResets = true;
+}
+
 function clearDisplay(){
     resultDisplay.textContent = 0;
+}
+
+function showResult(){
+    rightValue = Number(resultDisplay.textContent);
+    resultDisplay.textContent = operate(selectedOperator, leftValue, rightValue);
 }

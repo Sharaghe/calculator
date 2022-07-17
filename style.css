@@ -28,6 +28,7 @@ font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     line-height: 75px;
     color: white;
     position: relative;
+    border-bottom: 2px solid #777;
 }
 
 .buttons{

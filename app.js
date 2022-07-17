@@ -1,7 +1,8 @@
 
 const buttons = document.querySelectorAll(".buttons .button, .display .clear");
 const resultDisplay = document.querySelector(".display .result");
-let leftValue, rightValue = 0;
+let leftValue = 0;
+let rightValue;
 let selectedOperator;
 let nextClickResets = false;
 
@@ -9,6 +10,9 @@ const ADD = "add";
 const SUBTRACT = "subtract";
 const MULTIPLY = "multiply";
 const DIVIDE = "divide";
+const EQUALS = "equals";
+
+const possibleOperations = [ADD, SUBTRACT, MULTIPLY, DIVIDE];
 
 function add(a, b){
     return a + b;
@@ -32,10 +36,9 @@ function operate(operator, a, b){
         case SUBTRACT: return subtract(a, b); break;
         case MULTIPLY: return multiply(a, b); break;
         case DIVIDE: return divide(a, b); break;
-        default: return;
+        default: return; 
     }
 }
-
 
 for(let button of buttons){
     let dataValue = button.getAttribute("data-value");
@@ -44,11 +47,17 @@ for(let button of buttons){
 
 function clickButton(dataValue){
 
-    switch(dataValue){
-        case DIVIDE: case MULTIPLY: case ADD: case SUBTRACT: operationClicked(dataValue); break;
-        case "clear": clearDisplay(); break;
-        case "equals": showResult(); break;
-        default: break;
+    
+    if(possibleOperations.includes(dataValue)){
+        operationClicked(dataValue); 
+    }
+
+    if(dataValue === 'clear'){
+        clearDisplay();
+    }
+
+    if(dataValue === EQUALS && possibleOperations.includes(selectedOperator)){
+        showResult();
     }
 
     if(!isNaN(dataValue)) {
@@ -56,21 +65,36 @@ function clickButton(dataValue){
             resultDisplay.textContent = "";
             nextClickResets = false;
         }
-        resultDisplay.textContent += dataValue;
+        resultDisplay.textContent += dataValue; 
+
+        if(possibleOperations.includes(selectedOperator)){
+            rightValue = Number(resultDisplay.textContent);    
+        } else {
+            leftValue = Number(resultDisplay.textContent);
+        }
     }
 }
 
 function operationClicked(dataValue){
-    leftValue = Number(resultDisplay.textContent);
+    
+    if(possibleOperations.includes(selectedOperator) && rightValue !== undefined){
+        showResult();
+    } 
+
     selectedOperator = dataValue;
     nextClickResets = true;
 }
 
 function clearDisplay(){
     resultDisplay.textContent = 0;
+    leftValue = 0;
+    rightValue = undefined;
+    selectedOperator = undefined;
 }
 
 function showResult(){
-    rightValue = Number(resultDisplay.textContent);
     resultDisplay.textContent = operate(selectedOperator, leftValue, rightValue);
+    leftValue = Number(resultDisplay.textContent);
+    selectedOperator = undefined;
+    rightValue = undefined;
 }

@@ -15,6 +15,25 @@ const EQUALS = "equals";
 
 const possibleOperations = [ADD, SUBTRACT, MULTIPLY, DIVIDE];
 
+window.addEventListener('keydown', event => mapClicks(event));
+
+function mapClicks(event){
+
+    if(event.key >=0 && event.key <= 9){
+        clickButton(event.key);
+    } else {
+        switch(event.key){
+            case "*": clickButton(MULTIPLY); break;
+            case "+": clickButton(ADD); break;
+            case "-": clickButton(SUBTRACT); break;
+            case ".": clickButton("."); break;
+            case "/": clickButton(DIVIDE); break;
+            case "Enter": case "=": clickButton(EQUALS); break;
+            default: break;
+        }
+    }
+}
+
 function add(a, b){
     return a + b;
 }

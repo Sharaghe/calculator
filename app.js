@@ -5,6 +5,7 @@ let leftValue = 0;
 let rightValue;
 let selectedOperator;
 let nextClickResets = false;
+let lockDecimalButton = false;
 
 const ADD = "add";
 const SUBTRACT = "subtract";
@@ -46,11 +47,11 @@ for(let button of buttons){
 }
 
 function clickButton(dataValue){
-
     
     if(possibleOperations.includes(dataValue)){
         operationClicked(dataValue); 
     }
+
 
     if(dataValue === 'clear'){
         clearDisplay();
@@ -58,14 +59,30 @@ function clickButton(dataValue){
 
     if(dataValue === EQUALS && possibleOperations.includes(selectedOperator)){
         showResult();
+        nextClickResets = true;
     }
 
-    if(!isNaN(dataValue)) {
-        if(resultDisplay.textContent === "0" || nextClickResets) { 
-            resultDisplay.textContent = "";
+    let decimalButtonClicked = (dataValue === '.' && !lockDecimalButton);
+
+    if(!isNaN(dataValue) || decimalButtonClicked) {
+
+        console.log("entered condition");
+
+        if((resultDisplay.textContent === "0" || nextClickResets) ) { 
+
+            if (!decimalButtonClicked){
+                resultDisplay.textContent = "";
+            } else {
+                resultDisplay.textContent = "0";
+            }
             nextClickResets = false;
         }
+
         resultDisplay.textContent += dataValue; 
+
+        if(decimalButtonClicked) {
+            lockDecimalButton = true;
+        }
 
         if(possibleOperations.includes(selectedOperator)){
             rightValue = Number(resultDisplay.textContent);    
@@ -97,4 +114,6 @@ function showResult(){
     leftValue = Number(resultDisplay.textContent);
     selectedOperator = undefined;
     rightValue = undefined;
+    lockDecimalButton = false;
+    nextClickResets = false;
 }
